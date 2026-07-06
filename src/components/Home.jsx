@@ -64,6 +64,13 @@ theme: currtheme,
     }
 
     const savedata = () => {
+         let currtheme;
+        if(props.theme){
+            currtheme="light";
+        }
+        else{
+            currtheme="dark"
+        }
         if(form.password==""){
             toast.error("Password can't be empty!", {
 position: "top-right",
@@ -73,7 +80,7 @@ closeOnClick: false,
 pauseOnHover: true,
 draggable: true,
 progress: undefined,
-theme: "light",
+theme: currtheme,
 });
 
         }
@@ -86,7 +93,7 @@ closeOnClick: false,
 pauseOnHover: true,
 draggable: true,
 progress: undefined,
-theme: "light",
+theme: currtheme,
 });
 
 
@@ -105,7 +112,7 @@ closeOnClick: false,
 pauseOnHover: true,
 draggable: true,
 progress: undefined,
-theme: "light",
+theme: currtheme,
 });
         }
 
