@@ -43,6 +43,13 @@ const Home = (props) => {
 
 
     const copytext= (val)=>{
+        let currtheme;
+        if(props.theme){
+            currtheme="light";
+        }
+        else{
+            currtheme="dark"
+        }
         toast.info('Copied to clipboard!', {
 position: "top-right",
 autoClose: 5000,
@@ -51,7 +58,7 @@ closeOnClick: false,
 pauseOnHover: true,
 draggable: true,
 progress: undefined,
-theme: "light",
+theme: currtheme,
 });
         navigator.clipboard.writeText(val)
     }
