@@ -11,12 +11,19 @@ const Home = () => {
     const [form, setform] = useState({ task: "", username: "", password: "" })
     const [array, setarray] = useState([])
 
-    useEffect(() => {
-        let password = localStorage.getItem("password");
-        if (password) {
-            setarray(JSON.parse(password));
+    const getPasswords= async()=>{
+        let req= await fetch("http://localhost:3000/")
+        // let password = localStorage.getItem("password");
+        let password= await req.json()
+        console.log(password);
+      
+            setarray(password);
 
-        }
+    }
+
+    useEffect(() => {
+        getPasswords();
+        
     }, [])
 
 
@@ -56,13 +63,18 @@ theme: "light",
         navigator.clipboard.writeText(val)
     }
 
-    const savedata = () => {
+    const savedata = async() => {
         console.log(form);
         setarray([...array, {...form, id: uuidv4()}])
-        localStorage.setItem("password", JSON.stringify([...array, {...form, id: uuidv4()}]))
+        let res= await fetch("http://localhost:3000/", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  }, body: JSON.stringify({...form, id: uuidv4()})});
+        // localStorage.setItem("password", JSON.stringify([...array, {...form, id: uuidv4()}]))
         console.log([...array, form])
         setform({ task: "", username: "", password: "" });
-          toast('Saved successfully!', {
+          toast.success('Saved successfully!', {
 position: "top-right",
 autoClose: 5000,
 hideProgressBar: false,
@@ -75,14 +87,19 @@ theme: "light",
 
     }
 
-    const deleteitem= (id)=>{
+    const deleteitem= async(id)=>{
+        let res= await fetch("http://localhost:3000/", {
+  method: "DELETE",
+  headers: {
+    "Content-Type": "application/json",
+  }, body: JSON.stringify({id})});
      let index= array.findIndex(item=>{
       return item.id==id;
     })
     const filtered = array.filter(item => item.id != id);
     setarray(filtered)
     
-    localStorage.setItem("password", JSON.stringify(filtered));
+    // localStorage.setItem("password", JSON.stringify(filtered));
         
     }
 
