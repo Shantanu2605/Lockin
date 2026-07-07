@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
   import { ToastContainer, toast } from 'react-toastify';
 import {v4 as uuidv4} from 'uuid';
 
-const Home = () => {
+const Home = (props) => {
 
     const img = useRef();
     const pass = useRef();
@@ -50,7 +50,14 @@ const Home = () => {
 
 
     const copytext= (val)=>{
-        toast('Copied to clipboard!', {
+        let currtheme;
+        if(props.theme){
+            currtheme="light";
+        }
+        else{
+            currtheme="dark"
+        }
+        toast.info('Copied to clipboard!', {
 position: "top-right",
 autoClose: 5000,
 hideProgressBar: false,
@@ -58,14 +65,32 @@ closeOnClick: false,
 pauseOnHover: true,
 draggable: true,
 progress: undefined,
-theme: "light",
+theme: currtheme,
 });
         navigator.clipboard.writeText(val)
     }
 
     const savedata = async() => {
         console.log(form);
-        setarray([...array, {...form, id: uuidv4()}])
+       
+
+        }
+         if(form.task==""){
+                toast.error("Site field can't be empty!", {
+position: "top-right",
+autoClose: 5000,
+hideProgressBar: false,
+closeOnClick: false,
+pauseOnHover: true,
+draggable: true,
+progress: undefined,
+theme: currtheme,
+});
+
+
+        }
+        else{
+         setarray([...array, {...form, id: uuidv4()}])
         let res= await fetch("http://localhost:3000/", {
   method: "POST",
   headers: {
@@ -82,8 +107,9 @@ closeOnClick: false,
 pauseOnHover: true,
 draggable: true,
 progress: undefined,
-theme: "light",
+theme: currtheme,
 });
+        }
 
     }
 
@@ -118,7 +144,7 @@ theme: "light",
 
     return (
         
-        <div>
+        <div className='pb-[75px] '>
             <ToastContainer
 position="top-right"
 autoClose={5000}
@@ -132,21 +158,21 @@ pauseOnHover
 theme="light"
 />
 
-            <div className='text-white w-[90%] md:w-[50%] mx-auto mt-8 flex flex-col gap-6 font-[Pliant]'><p className='text-center font-bold text-2xl font-[Montserrat] font-light'>Your own Password Manager</p>
-                <div className='flex flex-col gap-1 w-[90%] md:w-[75%] mx-auto pb-10'><label htmlFor="task">What is it for?</label><input placeholder='e.g. Gmail/Phone password etc.' value={form.task} onChange={handlechange} name='task' type="text" className='w-full outline-none p-1 mx-auto bg-white text-black rounded-md' /> <div className='flex w-full mt-4 justify-around items-center max-lg:flex-col max-lg:gap-2'><input value={form.username} placeholder='Username' name='username' onChange={handlechange} type="text" className='w-[75%] md:w-1/3 p-1 outline-none bg-white text-black rounded-md' />
-                    <div className='w-[75%] md:w-1/3 bg-white text-black rounded-md flex items-center px-1'><input onChange={handlechange} value={form.password} type="Password" ref={pass} className='p-1 w-[90%] outline-none' placeholder='Enter password' name="password" id="" /><img onClick={eyeicon} ref={img} src="eye.png" className='h-[25px] cursor-pointer' alt="" /> </div>
-                    <button className='flex items-center  px-2 py-1 hover:bg-[#2a0f4c] cursor-pointer border-1 rounded-2xl' onClick={savedata}>Add <lord-icon
+            <div className={`${props.theme? "text-white": "text-black"} w-[90%] md:w-[50%] mx-auto mt-8 flex flex-col gap-6 font-[Pliant]`}><div className='flex flex-col justify-center items-center'> <p className='text-center font-bold text-2xl font-[Montserrat] font-light'>Your own Password Manager</p><p className={`text-2xs font-thin ${props.theme? "text-white": "text-[#353535]"}`}>Secure with end to end encryption.</p></div>
+                <div className='flex flex-col gap-1 w-[90%] md:w-[75%] mx-auto pb-10'><label htmlFor="task">What is it for?</label><input placeholder='e.g. Gmail/Phone password etc.' value={form.task} onChange={handlechange} name='task' type="text" className={`shadow-md ${props.theme? "shadow-emerald-500" : "shadow-amber-800"} w-full outline-none p-1 mx-auto bg-white text-black rounded-md`} /> <div className='flex w-full mt-4 justify-around items-center max-lg:flex-col max-lg:gap-2'><input value={form.username} placeholder='Username' name='username' onChange={handlechange} type="text" className={`shadow-md ${props.theme? "shadow-emerald-500" : "shadow-amber-800"}  w-[75%] md:w-1/3 p-1 outline-none bg-white text-black rounded-md`} />
+                    <div className={`w-[75%] md:w-1/3 bg-white text-black rounded-md flex items-center px-1 shadow-md ${props.theme? "shadow-emerald-500" : "shadow-amber-800"}`}><input onChange={handlechange} value={form.password} type="Password" ref={pass} className=' p-1 w-[90%] outline-none' placeholder='Enter password' name="password" id="" /><img onClick={eyeicon} ref={img} src="eye.png" className='h-[25px] cursor-pointer' alt="" /> </div>
+                    <button className={`flex items-center  px-2 py-1 hover:bg-[#39007e] hover:text-white cursor-pointer border-1 rounded-2xl max-lg:mt-2`} onClick={savedata}>Add <lord-icon
                         src="https://cdn.lordicon.com/vjgknpfx.json"
                         trigger="hover"
                     >
                     </lord-icon></button></div>
                 </div></div>
-
+                
             <div className='flex flex-col gap-7 mt-5'>
-                <h3 className='text-center text-white font-[Montserrat] text-xl'>Your details</h3>
-                {array.length == 0 ? <div className='mx-auto inline text-white'>Data will be shown here once added</div> :
+                <h3 className={`text-center ${props.theme? "text-white": "text-black"} font-[Montserrat] text-xl`}>Your details</h3>
+                {array.length == 0 ? <div className={`mx-auto inline ${props.theme? "text-white": "text-black"} `}>Data will be shown here once added</div> :
 
-                    <table className="table-auto w-full md:w-[75%] text-center text-white mx-auto font-[Montserrat] overflow-x-auto">
+                    <table className={`table-auto w-full md:w-[75%] text-center ${props.theme? "text-white": "text-black"} mx-auto font-[Montserrat] overflow-x-auto`}>
                         <thead>
                             <tr>
                                 <th className='font-light'>Purpose</th>
@@ -159,13 +185,13 @@ theme="light"
                             {array.map((item) => {
                                 return <tr className='text-thin' key={item.id}>
                                 
-                                    <td className='font-thin'>{item.task}  </td>
-                                    <td className='font-thin break-all'><div className='flex justify-center items-center'><span className='hidden md:block'>{item.username} </span><lord-icon
+                                    <td className='font-[200] break-all'>{item.task}  </td>
+                                    <td className='font-[200] break-all'><div className='flex justify-center items-center'><span className='hidden md:block'>{item.username} </span><lord-icon
                         src="https://cdn.lordicon.com/iykgtsbt.json" className="[--lord-icon-primary:#a855f7] cursor-pointer" onClick={()=> {copytext(item.username)}}
                         trigger="hover"
                     >
                     </lord-icon></div></td>
-                                    <td className='font-thin'><div className="flex items-center justify-center"> <span className='hidden md:block'>{item.password}</span><lord-icon
+                                    <td className='font-[200]'><div className="flex items-center justify-center"> <span className='hidden md:block'>{item.password}</span><lord-icon
                         src="https://cdn.lordicon.com/iykgtsbt.json" className="[--lord-icon-primary:#a855f7] cursor-pointer" onClick={()=> {copytext(item.password)}}
                         trigger="hover"
                     >

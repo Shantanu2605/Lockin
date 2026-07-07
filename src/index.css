@@ -4,11 +4,11 @@
   transition: all 0.3s;
 }
 
-nav h2, a{
-  font-family: "Geist Pixel";
+nav h2{
+  font-family: "Montenegrin Gothic One", serif;
 }
 
 nav h2:hover{
    transform: scale(1.2);
-   letter-spacing: 4px;
+
 }
